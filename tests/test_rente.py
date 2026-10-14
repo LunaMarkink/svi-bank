@@ -3,6 +3,8 @@ from rente import bereken_dagrente
 from datetime import date
 from rente import is_schrikkeljaar, aantal_dagen_in_jaar
 from rente import bepaal_renteaanpassing, bepaal_rentepercentage
+from rekening import Rekening
+
 def test_eerste_saldoklasse():
     saldo = Decimal("5000")
     assert bepaal_renteaanpassing(saldo) == Decimal("-0.25")
@@ -98,3 +100,27 @@ def test_dagrente_schrikkeljaar():
     )
 
     assert dagrente == Decimal("1")
+
+    
+def test_rente_wordt_opgebouwd():
+    """Controleert of rente apart wordt opgeslagen."""
+
+    rekening = Rekening("15000")
+    datum = date(2025, 1, 1)
+    basisrente = Decimal("1.8")
+
+    rekening.bereken_rente(datum, basisrente)
+
+    assert rekening.toon_opgebouwde_rente() > 0
+
+
+def test_saldo_blijft_gelijk():
+    """Controleert of de rente niet direct wordt bijgeschreven."""
+
+    rekening = Rekening("15000")
+    datum = date(2025, 1, 1)
+    basisrente = Decimal("1.8")
+
+    rekening.bereken_rente(datum, basisrente)
+
+    assert rekening.toon_saldo() == Decimal("15000")
