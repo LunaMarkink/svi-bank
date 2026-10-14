@@ -189,3 +189,13 @@ def test_kwartaalrente_niet_twee_keer_uitkeren():
     assert tweede_uitkering == Decimal("0")
     assert rekening.toon_saldo() == Decimal("15025.50")
     assert rekening.toon_opgebouwde_rente() == Decimal("10.00")
+
+    
+def test_negatief_beginsaldo_niet_toegestaan():
+    """Controleert dat een negatief beginsaldo wordt geweigerd."""
+
+    try:
+        Rekening("-100")
+        assert False, "Een negatief beginsaldo moet een fout geven."
+    except ValueError:
+        pass
