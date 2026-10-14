@@ -15,6 +15,7 @@ class Rekening:
         # De rente die nog niet is uitgekeerd
         self.opgebouwde_rente = Decimal("0")
         self.uitgekeerde_rente = Decimal("0")
+        self.uitgekeerde_kwartalen = set()
 
     def bereken_rente(self, datum, basisrente):
         """Bereken en bewaar de rente van één dag."""
@@ -46,27 +47,34 @@ class Rekening:
         return self.opgebouwde_rente
 
     
+   
     def keer_kwartaalrente_uit(self, datum):
-        """Keert de opgebouwde rente uit aan het einde van een kwartaal."""
+        """Keert rente maximaal één keer per kwartaal uit."""
 
         from rente import is_laatste_dag_kwartaal
 
-        # Controleer of het kwartaal is afgelopen
         if not is_laatste_dag_kwartaal(datum):
             return Decimal("0")
 
-        # Rond de opgebouwde rente af op centen
+        # Bepaal het jaar en kwartaal
+        kwartaal = (datum.year, (datum.month - 1) // 3 + 1)
+
+        # Controleer of dit kwartaal al is uitgekeerd
+        if kwartaal in self.uitgekeerde_kwartalen:
+            return Decimal("0")
+
+        # Rond de opgebouwde rente af
         rente_uitkering = self.opgebouwde_rente.quantize(
             Decimal("0.01")
         )
 
-        # Voeg de rente toe aan het saldo
+        # Verwerk de uitkering
         self.saldo += rente_uitkering
-
-        # Bewaar hoeveel rente is uitgekeerd
         self.uitgekeerde_rente += rente_uitkering
-
-        # Zet de opgebouwde rente weer op nul
         self.opgebouwde_rente = Decimal("0")
 
+        # Onthoud dat dit kwartaal is verwerkt
+        self.uitgekeerde_kwartalen.add(kwartaal)
+
         return rente_uitkering
+

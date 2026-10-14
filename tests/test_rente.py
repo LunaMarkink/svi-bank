@@ -164,3 +164,28 @@ def test_geen_uitkering_buiten_kwartaal():
     assert uitkering == Decimal("0")
     assert rekening.toon_saldo() == Decimal("15000")
     assert rekening.toon_opgebouwde_rente() == Decimal("25.50")
+
+    
+def test_kwartaalrente_niet_twee_keer_uitkeren():
+    """Controleert dat een kwartaal maar één keer wordt uitgekeerd."""
+
+    rekening = Rekening("15000")
+    rekening.opgebouwde_rente = Decimal("25.50")
+
+    # Eerste uitkering
+    eerste_uitkering = rekening.keer_kwartaalrente_uit(
+        date(2025, 3, 31)
+    )
+
+    # Er wordt opnieuw rente opgebouwd
+    rekening.opgebouwde_rente = Decimal("10.00")
+
+    # Probeer hetzelfde kwartaal opnieuw uit te keren
+    tweede_uitkering = rekening.keer_kwartaalrente_uit(
+        date(2025, 3, 31)
+    )
+
+    assert eerste_uitkering == Decimal("25.50")
+    assert tweede_uitkering == Decimal("0")
+    assert rekening.toon_saldo() == Decimal("15025.50")
+    assert rekening.toon_opgebouwde_rente() == Decimal("10.00")
