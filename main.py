@@ -1,27 +1,30 @@
 
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
-
 from rekening import Rekening
 
-
-# Maak een nieuwe spaarrekening aan
+# Maak een spaarrekening aan
 rekening = Rekening("15000")
 
-# De basisrente voor spaarders
+# Basisrente voor spaarders
 basisrente = Decimal("1.8")
 
-# Datum waarop we rente berekenen
+# Eerste kwartaal van 2025
 datum = date(2025, 1, 1)
+einddatum = date(2025, 3, 31)
 
-# Bereken de rente voor één dag
-rekening.bereken_rente(datum, basisrente)
+# Bereken voor iedere dag de rente
+while datum <= einddatum:
+    rekening.bereken_rente(datum, basisrente)
+    datum += timedelta(days=1)
 
-# Toon de gegevens
-print("SVI Bank - Spaarrekening")
-print("Saldo: €", rekening.toon_saldo())
+# Toon het saldo en de opgebouwde rente
+print("SVI Bank - Kwartaalrente")
+print("Saldo voor uitkering: €", rekening.toon_saldo())
+print("Opgebouwde rente: €", round(rekening.toon_opgebouwde_rente(), 2))
 
-print(
-    "Opgebouwde rente: €",
-    round(rekening.toon_opgebouwde_rente(), 2)
-)
+# Keer de kwartaalrente uit
+uitkering = rekening.keer_kwartaalrente_uit(einddatum)
+
+print("Uitgekeerde rente: €", uitkering)
+print("Nieuw saldo: €", rekening.toon_saldo())

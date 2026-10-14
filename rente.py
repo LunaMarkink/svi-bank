@@ -79,3 +79,17 @@ def bepaal_rentepercentage(saldo, basisrente):
         return Decimal("0")
 
     return basisrente + aanpassing
+
+
+
+def is_laatste_dag_kwartaal(datum):
+    """Controleert of een datum de laatste dag van een kwartaal is."""
+
+    kwartaal_einddatums = [
+        (3, 31),
+        (6, 30),
+        (9, 30),
+        (12, 31)
+    ]
+
+    return (datum.month, datum.day) in kwartaal_einddatums

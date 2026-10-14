@@ -4,6 +4,7 @@ from datetime import date
 from rente import is_schrikkeljaar, aantal_dagen_in_jaar
 from rente import bepaal_renteaanpassing, bepaal_rentepercentage
 from rekening import Rekening
+from rente import is_laatste_dag_kwartaal
 
 def test_eerste_saldoklasse():
     saldo = Decimal("5000")
@@ -124,3 +125,42 @@ def test_saldo_blijft_gelijk():
     rekening.bereken_rente(datum, basisrente)
 
     assert rekening.toon_saldo() == Decimal("15000")
+
+    
+def test_laatste_dag_kwartaal():
+    """Controleert of 31 maart een kwartaalafsluiting is."""
+    assert is_laatste_dag_kwartaal(date(2025, 3, 31))
+
+
+def test_geen_laatste_dag_kwartaal():
+    """Controleert of 15 maart geen kwartaalafsluiting is."""
+    assert not is_laatste_dag_kwartaal(date(2025, 3, 15))
+
+
+def test_kwartaalrente_wordt_uitgekeerd():
+    """Controleert of rente wordt bijgeschreven op het saldo."""
+    rekening = Rekening("15000")
+    rekening.opgebouwde_rente = Decimal("25.50")
+
+    uitkering = rekening.keer_kwartaalrente_uit(
+        date(2025, 3, 31)
+    )
+
+    assert uitkering == Decimal("25.50")
+    assert rekening.toon_saldo() == Decimal("15025.50")
+    assert rekening.toon_opgebouwde_rente() == Decimal("0")
+    assert rekening.uitgekeerde_rente == Decimal("25.50")
+
+
+def test_geen_uitkering_buiten_kwartaal():
+    """Controleert dat rente niet tussentijds wordt uitgekeerd."""
+    rekening = Rekening("15000")
+    rekening.opgebouwde_rente = Decimal("25.50")
+
+    uitkering = rekening.keer_kwartaalrente_uit(
+        date(2025, 3, 15)
+    )
+
+    assert uitkering == Decimal("0")
+    assert rekening.toon_saldo() == Decimal("15000")
+    assert rekening.toon_opgebouwde_rente() == Decimal("25.50")
