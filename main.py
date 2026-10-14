@@ -2,21 +2,26 @@
 from datetime import date
 from decimal import Decimal
 
-from rente import bereken_dagrente
+from rente import bereken_dagrente, bepaal_rentepercentage
 
-# Gegevens van een voorbeeldrekening
-saldo = Decimal("10000")
-rentepercentage = Decimal("1.8")
+# Voorbeeldgegevens van een klant
+saldo = Decimal("15000")
+basisrente = Decimal("1.8")
 datum = date(2025, 1, 1)
 
-# Bereken de dagrente
+# Bepaal het rentepercentage
+rentepercentage = bepaal_rentepercentage(
+    saldo,
+    basisrente
+)
+
+# Bereken de rente voor één dag
 dagrente = bereken_dagrente(
     saldo,
     rentepercentage,
     datum
 )
 
-# Toon de uitkomst
 print("SVI Bank - Renteberekening")
 print("Saldo: €", saldo)
 print("Rentepercentage:", rentepercentage, "%")

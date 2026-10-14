@@ -35,3 +35,47 @@ def bereken_dagrente(saldo, rentepercentage, datum):
     )
 
     return dagrente
+
+
+def bepaal_renteaanpassing(saldo):
+    """
+    Bepaalt de renteaanpassing op basis van de saldoklasse.
+
+    saldo: het huidige spaarsaldo van de klant
+    """
+
+    if saldo < Decimal("0"):
+        raise ValueError("Saldo mag niet negatief zijn.")
+
+    if saldo <= Decimal("10000"):
+        return Decimal("-0.25")
+
+    elif saldo <= Decimal("25000"):
+        return Decimal("0")
+
+    elif saldo <= Decimal("50000"):
+        return Decimal("-0.15")
+
+    elif saldo <= Decimal("100000"):
+        return Decimal("-0.25")
+
+    elif saldo <= Decimal("1000000"):
+        return Decimal("-0.50")
+
+    else:
+        return None
+
+
+def bepaal_rentepercentage(saldo, basisrente):
+    """
+    Berekent het jaarlijkse rentepercentage
+    op basis van de saldoklasse.
+    """
+
+    aanpassing = bepaal_renteaanpassing(saldo)
+
+    # Boven 1 miljoen ontvangt klant geen rente
+    if aanpassing is None:
+        return Decimal("0")
+
+    return basisrente + aanpassing

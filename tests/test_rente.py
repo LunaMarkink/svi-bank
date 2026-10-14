@@ -2,6 +2,52 @@ from decimal import Decimal
 from rente import bereken_dagrente
 from datetime import date
 from rente import is_schrikkeljaar, aantal_dagen_in_jaar
+from rente import bepaal_renteaanpassing, bepaal_rentepercentage
+def test_eerste_saldoklasse():
+    saldo = Decimal("5000")
+    assert bepaal_renteaanpassing(saldo) == Decimal("-0.25")
+
+
+def test_tweede_saldoklasse():
+    saldo = Decimal("15000")
+    assert bepaal_renteaanpassing(saldo) == Decimal("0")
+
+
+def test_derde_saldoklasse():
+    saldo = Decimal("30000")
+    assert bepaal_renteaanpassing(saldo) == Decimal("-0.15")
+
+
+def test_vierde_saldoklasse():
+    saldo = Decimal("75000")
+    assert bepaal_renteaanpassing(saldo) == Decimal("-0.25")
+
+
+def test_vijfde_saldoklasse():
+    saldo = Decimal("150000")
+    assert bepaal_renteaanpassing(saldo) == Decimal("-0.50")
+
+
+def test_boven_miljoen():
+    saldo = Decimal("1500000")
+    assert bepaal_renteaanpassing(saldo) is None
+
+
+def test_rentepercentage():
+    saldo = Decimal("15000")
+    basisrente = Decimal("1.8")
+
+    assert bepaal_rentepercentage(
+        saldo, basisrente
+    ) == Decimal("1.8")
+
+
+def test_negatief_saldo():
+    import pytest
+
+    with pytest.raises(ValueError):
+        bepaal_renteaanpassing(Decimal("-100"))
+
 
 
 def test_schrikkeljaar():
