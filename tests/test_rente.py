@@ -1,3 +1,5 @@
+import pytest\
+
 from decimal import Decimal
 from rente import bereken_dagrente
 from datetime import date
@@ -194,8 +196,5 @@ def test_kwartaalrente_niet_twee_keer_uitkeren():
 def test_negatief_beginsaldo_niet_toegestaan():
     """Controleert dat een negatief beginsaldo wordt geweigerd."""
 
-    try:
+    with pytest.raises(ValueError):
         Rekening("-100")
-        assert False, "Een negatief beginsaldo moet een fout geven."
-    except ValueError:
-        pass

@@ -1,10 +1,6 @@
 
-from datetime import date
 from decimal import Decimal
-
 from rente import bereken_dagrente, bepaal_rentepercentage, is_laatste_dag_kwartaal
-
-
 
 class Rekening:
     """Beheert het saldo en de rente."""
@@ -13,7 +9,7 @@ class Rekening:
         # Het saldo waarmee de rekening begint
         self.saldo = Decimal(str(beginsaldo))
         if self.saldo < Decimal("0"):
-         raise ValueError("Beginsaldo mag niet negatief zijn.")
+             raise ValueError("Beginsaldo mag niet negatief zijn.")
 
         # De rente die nog niet is uitgekeerd
         self.opgebouwde_rente = Decimal("0")
