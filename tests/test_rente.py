@@ -1,4 +1,5 @@
-
+from decimal import Decimal
+from rente import bereken_dagrente
 from datetime import date
 from rente import is_schrikkeljaar, aantal_dagen_in_jaar
 
@@ -25,3 +26,29 @@ def test_aantal_dagen_schrikkeljaar():
     datum = date(2024, 1, 1)
 
     assert aantal_dagen_in_jaar(datum) == 366
+
+
+def test_dagrente_normaal_jaar():
+    """Controleert de dagrente in een normaal jaar."""
+    saldo = Decimal("10000")
+    rentepercentage = Decimal("3.65")
+    datum = date(2025, 1, 1)
+
+    dagrente = bereken_dagrente(
+        saldo, rentepercentage, datum
+    )
+
+    assert dagrente == Decimal("1")
+
+
+def test_dagrente_schrikkeljaar():
+    """Controleert de dagrente in een schrikkeljaar."""
+    saldo = Decimal("10000")
+    rentepercentage = Decimal("3.66")
+    datum = date(2024, 1, 1)
+
+    dagrente = bereken_dagrente(
+        saldo, rentepercentage, datum
+    )
+
+    assert dagrente == Decimal("1")

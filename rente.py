@@ -1,5 +1,5 @@
-
 from datetime import date
+from decimal import Decimal
 
 
 def is_schrikkeljaar(jaar):
@@ -13,3 +13,25 @@ def aantal_dagen_in_jaar(datum):
         return 366
 
     return 365
+
+
+def bereken_dagrente(saldo, rentepercentage, datum):
+    """
+    Berekent de rente voor één dag.
+
+    saldo: het huidige saldo van de klant
+    rentepercentage: de jaarlijkse rente in procenten
+    datum: de datum waarop de rente wordt berekend
+    """
+
+    # Bepaal hoeveel dagen het jaar heeft
+    dagen = aantal_dagen_in_jaar(datum)
+
+    # Berekent de rente over één dag
+    dagrente = (
+        saldo * rentepercentage
+        / Decimal("100")
+        / Decimal(dagen)
+    )
+
+    return dagrente

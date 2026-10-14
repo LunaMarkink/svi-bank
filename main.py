@@ -1,13 +1,23 @@
 
 from datetime import date
-from rente import aantal_dagen_in_jaar
+from decimal import Decimal
 
-# De startdatum van het SVI-banksysteem
-startdatum = date(2025, 1, 1)
+from rente import bereken_dagrente
 
-# Bepaal hoeveel dagen het jaar heeft
-dagen = aantal_dagen_in_jaar(startdatum)
+# Gegevens van een voorbeeldrekening
+saldo = Decimal("10000")
+rentepercentage = Decimal("1.8")
+datum = date(2025, 1, 1)
 
+# Bereken de dagrente
+dagrente = bereken_dagrente(
+    saldo,
+    rentepercentage,
+    datum
+)
+
+# Toon de uitkomst
 print("SVI Bank - Renteberekening")
-print("Startdatum:", startdatum)
-print("Aantal dagen in het jaar:", dagen)
+print("Saldo: €", saldo)
+print("Rentepercentage:", rentepercentage, "%")
+print("Dagrente: €", round(dagrente, 2))
